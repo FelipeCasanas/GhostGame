@@ -4,13 +4,13 @@
 Code documentation:
 
 1. HTML get zone elements
-2. Objects instancement
-3. Entity class
-4. Player class
-5. EnemyGenerator class
-6. Enemy class
-7. Key down listener (Sprite translate functions)
-8. Start game function
+2. Entity class
+3. Player class
+4. EnemyGenerator class
+5. Enemy class
+6. Key down listener (Sprite translate functions)
+7. Start game function
+8. Objects instancement
 
 */
 
@@ -19,8 +19,6 @@ const popUp = document.getElementById('popUp');
 const nameInput = document.getElementById('nameInput');
 const playButton = document.getElementById('playButton');
 const counter = document.getElementById('counter');
-
-const player = new Player(nameInput.value, 0, 'ghost', 100, 1, 8, 0, 0);
 
 class Entity {
     constructor(type, health, size, speed, positionX, positionY) {
@@ -173,7 +171,6 @@ class Enemy extends EnemyGenerator {
 }
 
 body.addEventListener("keydown", function (e) {
-
     switch (e.key) {
 
         case 'd':
@@ -232,7 +229,6 @@ body.addEventListener("keydown", function (e) {
 
 playButton.addEventListener("click", function () {
     if (!nameInput.value == "") {
-        let speed = player.getSpeed();
         player.showGhostRight();
 
         const fragment = document.createDocumentFragment();
@@ -254,3 +250,6 @@ playButton.addEventListener("click", function () {
         alert('El campo esta vacio');
     }
 });
+
+const player = new Player(nameInput.value, 0, 'ghost', 100, 1, 8, 0, 0);
+let speed = player.getSpeed();
