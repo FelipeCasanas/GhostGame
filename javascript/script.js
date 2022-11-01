@@ -1,33 +1,114 @@
+
+/*
+
+Code documentation:
+
+1. HTML get zone elements
+2. Objects instancement
+3. Entity class
+4. Player class
+5. EnemyGenerator class
+6. Enemy class
+7. Key down listener (Sprite translate functions)
+8. Start game function
+
+*/
+
 const body = document.getElementById('body');
 const popUp = document.getElementById('popUp');
 const nameInput = document.getElementById('nameInput');
 const playButton = document.getElementById('playButton');
+const counter = document.getElementById('counter');
 
-class Player {
-    playerGhost = document.getElementById('playerGhost');
+const player = new Player(nameInput.value, 0, 'ghost', 100, 1, 8, 0, 0);
+
+class Entity {
+    constructor(type, health, size, speed, positionX, positionY) {
+        this.type = type;
+        this.health = health;
+        this.size = size;
+        this.speed = speed;
+        this.positionX = positionX;
+        this.positionY = positionY;
+    }
+
+    getType() {
+        return this.type;
+    }
+
+    getHealth() {
+        return this.health;
+    }
+
+    getSize() {
+        return this.size;
+    }
+
+    getSpeed() {
+        return this.speed;
+    }
+
+    getPositionX() {
+        return this.positionX;
+    }
+
+    getPositionY() {
+        return this.positionY;
+    }
+
+    setHealth(health) {
+        this.health = health;
+    }
+
+    setPositionX(action, positionX) {
+        if (action == 0) {
+            if (this.positionX < this.screenWidth) {
+                this.positionX += positionX;
+            }
+        } else if (action == 1) {
+            if (this.positionX > 0) {
+                this.positionX -= positionX;
+            }
+        }
+    }
+
+    setPositionY(action, positionY) {
+        if (action == 0) {
+            if (this.positionY < this.screenHeight) {
+                this.positionY += positionY;
+            }
+        } else if (action == 1) {
+            if (this.positionY > 0) {
+                this.positionY -= positionY;
+            }
+        }
+    }
+}
+
+class Player extends Entity {
     spriteImgLeft = document.getElementById('spriteImgLeft');
     spriteImgRight = document.getElementById('spriteImgRight');
+    playerGhost = document.getElementById('playerGhost');
     screenHeight = body.clientHeight;
     screenWidth = body.clientWidth;
 
-    constructor(name, score, positionX, positionY) {
+    constructor(name, score, type, health, size, speed, positionX, positionY) {
+        super(type, health, size, speed, positionX, positionY);
         this.name = name;
         this.score = score;
-        this.positionX = positionX;
-        this.positionY = positionY
     }
 
     getName() {
         return this.name;
     }
+
     getScore() {
         return this.score;
     }
-    getPositionX() {
-        return this.positionX;
-    }
-    getPositionY() {
-        return this.positionY;
+
+    setScore() {
+        this.score++;
+        counter.textContent = `PUNTAJE: ${this.score}`;
     }
 
     setName(name) {
@@ -38,35 +119,23 @@ class Player {
         this.score = score;
     }
 
-    setPositionX(action, positionX) {
+    moveX(action) {
         if (action == 0) {
-            if (this.positionX < this.screenWidth) {
-                this.positionX += positionX;
-                this.hideGhostLeft();
-                this.showGhostRight();
-                this.playerGhost.style.transform = `translate(${this.positionX}px, ${this.positionY}px)`;
-            }
+            this.hideGhostLeft();
+            this.showGhostRight();
+            this.playerGhost.style.transform = `translate(${this.positionX}px, ${this.positionY}px)`;
         } else if (action == 1) {
-            if (this.positionX > 0) {
-                this.positionX -= positionX;
-                this.hideGhostRight();
-                this.showGhostLeft();
-                this.playerGhost.style.transform = `translate(${this.positionX}px, ${this.positionY}px)`;
-            }
+            this.hideGhostRight();
+            this.showGhostLeft();
+            this.playerGhost.style.transform = `translate(${this.positionX}px, ${this.positionY}px)`;
         }
     }
 
-    setPositionY(action, positionY) {
+    moveY(action) {
         if (action == 0) {
-            if (this.positionY < this.screenHeight) {
-                this.positionY += positionY;
-                this.playerGhost.style.transform = `translate(${this.positionX}px, ${this.positionY}px)`;
-            }
+            this.playerGhost.style.transform = `translate(${this.positionX}px, ${this.positionY}px)`;
         } else if (action == 1) {
-            if (this.positionY > 0) {
-                this.positionY -= positionY;
-                this.playerGhost.style.transform = `translate(${this.positionX}px, ${this.positionY}px)`;
-            }
+            this.playerGhost.style.transform = `translate(${this.positionX}px, ${this.positionY}px)`;
         }
     }
 
@@ -91,12 +160,80 @@ class Player {
     }
 }
 
-const player1 = new Player("", 0, 1, 1);
+class EnemyGenerator extends Entity {
+    constructor(type, health, size, speed, positionX, positionY) {
+        super(type, health, size, speed, positionX, positionY);
+    }
+}
+
+class Enemy extends EnemyGenerator {
+    constructor(type, health, size, speed, positionX, positionY) {
+        super(type, health, size, speed, positionX, positionY);
+    }
+}
+
+body.addEventListener("keydown", function (e) {
+
+    switch (e.key) {
+
+        case 'd':
+            player.setPositionX(0, speed);
+            player.moveX(0);
+            break;
+
+        case 'a':
+            player.setPositionX(1, speed);
+            player.moveX(1);
+            break;
+
+        case 'w':
+            player.setPositionY(1, speed);
+            player.moveY(1);
+            break;
+
+        case 's':
+            player.setPositionY(0, speed);
+            player.moveY(0);
+            break;
+
+        case 'e':
+            // console.log('digonal arriba-derecha');
+            player.setPositionX(0, (speed * 60) / 100);
+            player.setPositionY(1, (speed * 60) / 100);
+            player.moveX(0);
+            player.moveY(1);
+            break;
+
+        case 'x':
+            // console.log('digonal abajo-derecha');
+            player.setPositionX(0, (speed * 60) / 100);
+            player.setPositionY(0, (speed * 60) / 100);
+            player.moveX(0);
+            player.moveY(0);
+            break;
+
+        case 'z':
+            // console.log('digonal abajo-izquierda');
+            player.setPositionX(1, (speed * 60) / 100);
+            player.setPositionY(0, (speed * 60) / 100);
+            player.moveX(1);
+            player.moveY(0);
+            break;
+
+        case 'q':
+            // console.log('digonal arriba-izquierda');
+            player.setPositionX(1, (speed * 60) / 100);
+            player.setPositionY(1, (speed * 60) / 100);
+            player.moveX(1);
+            player.moveY(1);
+            break;
+    }
+});
 
 playButton.addEventListener("click", function () {
     if (!nameInput.value == "") {
-        player1.setName(nameInput.value);
-        player1.showGhostRight();
+        let speed = player.getSpeed();
+        player.showGhostRight();
 
         const fragment = document.createDocumentFragment();
         const counterDiv = document.createElement('div');
@@ -115,51 +252,5 @@ playButton.addEventListener("click", function () {
         popUp.setAttribute('class', 'pop_up_hidden');
     } else {
         alert('El campo esta vacio');
-    }
-});
-
-body.addEventListener("keydown", function (e) {
-
-    switch (e.key) {
-
-        case 'd':
-            player1.setPositionX(0, 6);
-            break;
-
-        case 'a':
-            player1.setPositionX(1, 6);
-            break;
-
-        case 'w':
-            player1.setPositionY(1, 6);
-            break;
-
-        case 's':
-            player1.setPositionY(0, 6);
-            break;
-
-        case 'e':
-            // console.log('digonal arriba-derecha');
-            player1.setPositionX(0, 4);
-            player1.setPositionY(1, 4);
-            break;
-
-        case 'x':
-            // console.log('digonal abajo-derecha');
-            player1.setPositionX(0, 4);
-            player1.setPositionY(0, 4);
-            break;
-
-        case 'z':
-            // console.log('digonal abajo-izquierda');
-            player1.setPositionX(1, 4);
-            player1.setPositionY(0, 4);
-            break;
-
-        case 'q':
-            // console.log('digonal arriba-izquierda');
-            player1.setPositionX(1, 4);
-            player1.setPositionY(1, 4);
-            break;
     }
 });

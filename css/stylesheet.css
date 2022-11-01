@@ -4,6 +4,10 @@
 }
 
 body {
+    height: 100vh;
+    background-image: url('../img/forest.jpg');
+    background-size: cover;
+    backdrop-filter: blur(2px);
     overflow: hidden;
 }
 
@@ -21,9 +25,16 @@ body {
     display: none;
 }
 
+.first_row {
+    display: block;
+    height: 40vh;
+    width: 25vw;
+    margin: 0 auto;
+}
+
 .pop_up_input_container {
     display: flex;
-    height: 40vh;
+    height: 320px;
     width: 25vw;
     box-shadow: 5px 5px 10px 3px #000000;
     border-radius: 15px;
@@ -31,7 +42,7 @@ body {
     justify-content: center;
     flex-direction: column;
     gap: 40px;
-    background-color: rgba(200, 200, 200, 0.8);
+    background-color: rgba(200, 200, 200, 0.4);
 }
 
 .pop_up_input_container>h1 {
@@ -85,12 +96,51 @@ body {
     z-index: 500;
 }
 
-body {
-    height: 100vh;
-    background-image: url('../img/forest.jpg');
-    background-size: cover;
-    backdrop-filter: blur(2px);
-    overflow-y: hidden;
+.second_row {
+    display: block;
+    position: relative;
+    border-radius: 15px;
+    left: -30px;
+    float: right;
+    overflow: hidden;
+}
+
+.help_container {
+    display: flex;
+    height: 320px;
+    cursor: pointer;
+    border-radius: 15px;
+    padding: 0 10px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    background-color: rgba(200, 200, 200, 0.4);
+    box-sizing: border-box;
+}
+
+.help_container p {
+    color: #000000;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    z-index: 500;
+}
+
+.help_container::after {
+    position: absolute;
+    content: "";
+    height: 450px;
+    width: 250px;
+    background: linear-gradient(120deg, rgba(143, 64, 196, 0.4) 30%, rgba(78, 7, 126, 0.4) 42%);
+    clip-path: ellipse();
+    top: -550px;
+    transition: 1.2s ease-in-out;
+    transition-delay: 180ms;
+}
+
+.help_container:hover::after {
+    top: -70px;
+    z-index: 200;
+    transition: .7s ease-in-out;
 }
 
 @keyframes ghostAnimation {
@@ -182,7 +232,7 @@ body {
     margin: 40px;
     padding: 9px;
     border-radius: 15px;
-    background-color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.7);
     box-sizing: border-box;
     float: right;
 }
