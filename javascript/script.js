@@ -21,7 +21,31 @@ const nameInput = document.getElementById('nameInput');
 const playButton = document.getElementById('playButton');
 const counter = document.getElementById('counter');
 
+class Enviroment {
+    screenHeight = body.clientHeight;
+    screenWidth = body.clientWidth;
+
+    getScreenHeight() {
+        return this.screenHeight - this.screenHeight*0.2;
+    }
+
+    setScreenHeight(screenHeight) {
+        this.screenHeight = screenHeight;
+    }
+
+    getScreenWidth() {
+        return this.screenWidth - this.screenWidth*0.08;
+    }
+
+    setScreenWidth(screenWidth) {
+        this.screenWidth = screenWidth;
+    }
+}
+
+
 class Object {
+    enviroment = new Enviroment();
+
     constructor(type, heigth, width, weigth, positionX, positionY) {
         this.type = type;
         this.heigth = heigth;
@@ -35,29 +59,41 @@ class Object {
         return this.type;
     }
 
-    getHealth() {
-        return this.health;
+    setType(type) {
+        this.type = type;
     }
 
-    getSize() {
-        return this.size;
+    getHeigth() {
+        return this.heigth;
     }
 
-    getSpeed() {
-        return this.speed;
+    setHeigth(heigth) {
+        this.heigth = heigth;
+    }
+    
+    getWidth() {
+        return this.width;
+    }
+
+    setWidth(width) {
+        this.width = width;
+    }
+
+    getWeigth() {
+        return this.weigth;
+    }
+
+    setWeigth(weigth) {
+        this.weigth = weigth;
     }
 
     getPositionX() {
         return this.positionX;
     }
 
-    getPositionY() {
-        return this.positionY;
-    }
-
     setPositionX(action, positionX) {
         if (action == 0) {
-            if (this.positionX < this.screenWidth) {
+            if (this.positionX < this.enviroment.getScreenWidth()) {
                 this.positionX += positionX;
             }
         } else if (action == 1) {
@@ -67,9 +103,13 @@ class Object {
         }
     }
 
+    getPositionY() {
+        return this.positionY;
+    }
+
     setPositionY(action, positionY) {
         if (action == 0) {
-            if (this.positionY < this.screenHeight) {
+            if (this.positionY < this.enviroment.getScreenHeight()) {
                 this.positionY += positionY;
             }
         } else if (action == 1) {
@@ -82,14 +122,49 @@ class Object {
 }
 
 class Entity extends Object {
-    constructor(type, heigth, width, weigth, positionX, positionY, health, speed) {
+    sprite;
+
+    constructor(type, heigth, width, weigth, positionX, positionY, health, speed, sprite) {
         super(type, heigth, width, weigth, positionX, positionY);
         this.health = health;
         this.speed = speed;
+        this.sprite = sprite;
+    }
+
+    getHealth() {
+        return this.health;
     }
 
     setHealth(health) {
         this.health = health;
+    }
+
+    getSpeed() {
+        return this.speed;
+    }
+
+    setSpeed(speed) {
+        this.speed = speed;
+    }
+
+    moveX(direction) {
+        if (direction == 0) {
+            this.hideGhostLeft();
+            this.showGhostRight();
+            this.sprite.style.transform = `translate(${this.positionX}px, ${this.positionY}px)`;
+        } else if (direction == 1) {
+            this.hideGhostRight();
+            this.showGhostLeft();
+            this.sprite.style.transform = `translate(${this.positionX}px, ${this.positionY}px)`;
+        }
+    }
+
+    moveY(direction) {
+        if (direction == 0) {
+            this.sprite.style.transform = `translate(${this.positionX}px, ${this.positionY}px)`;
+        } else if (direction == 1) {
+            this.sprite.style.transform = `translate(${this.positionX}px, ${this.positionY}px)`;
+        }
     }
 
 }
@@ -97,18 +172,19 @@ class Entity extends Object {
 class Player extends Entity {
     spriteImgLeft = document.getElementById('spriteImgLeft');
     spriteImgRight = document.getElementById('spriteImgRight');
-    playerGhost = document.getElementById('playerGhost');
-    screenHeight = body.clientHeight;
-    screenWidth = body.clientWidth;
 
-    constructor(type, heigth, width, weigth, positionX, positionY, health, speed, name, score) {
-        super(type, heigth, width, weigth, positionX, positionY, health, speed);
+    constructor(type, heigth, width, weigth, positionX, positionY, health, speed, sprite, name, score) {
+        super(type, heigth, width, weigth, positionX, positionY, health, speed, sprite);
         this.name = name;
         this.score = score;
     }
 
     getName() {
         return this.name;
+    }
+
+    setName(name) {
+        this.name = name;
     }
 
     getScore() {
@@ -119,33 +195,9 @@ class Player extends Entity {
         this.score++;
         counter.textContent = `PUNTAJE: ${this.score}`;
     }
-
-    setName(name) {
-        this.name = name;
-    }
-
+    
     setScore(score) {
         this.score = score;
-    }
-
-    moveX(action) {
-        if (action == 0) {
-            this.hideGhostLeft();
-            this.showGhostRight();
-            this.playerGhost.style.transform = `translate(${this.positionX}px, ${this.positionY}px)`;
-        } else if (action == 1) {
-            this.hideGhostRight();
-            this.showGhostLeft();
-            this.playerGhost.style.transform = `translate(${this.positionX}px, ${this.positionY}px)`;
-        }
-    }
-
-    moveY(action) {
-        if (action == 0) {
-            this.playerGhost.style.transform = `translate(${this.positionX}px, ${this.positionY}px)`;
-        } else if (action == 1) {
-            this.playerGhost.style.transform = `translate(${this.positionX}px, ${this.positionY}px)`;
-        }
     }
 
     showGhostLeft() {
@@ -262,5 +314,6 @@ playButton.addEventListener("click", function () {
     }
 });
 
-const player = new Player('ghost', 1, 1,1,1, 1, 100, 10, nameInput.value, 0);
+sprite = document.getElementById('playerGhost');
+const player = new Player('ghost', 1, 1, 1, 1, 1, 100, 20, sprite, nameInput.value, 0);
 let speed = player.getSpeed();
