@@ -4,13 +4,14 @@
 Code documentation:
 
 1. HTML get zone elements
-2. Entity class
-3. Player class
-4. EnemyGenerator class
-5. Enemy class
-6. Key down listener (Sprite translate functions)
-7. Start game function
-8. Objects instancement
+2. Object class
+3. Entity class extends Object
+4. Player class extends Entity
+5. EnemyGenerator class extends Entity
+6. Enemy class extends EnemyGenerator
+7. Key down listener (Sprite translate functions)
+8. Start game function
+9. Objects instancement
 
 */
 
@@ -20,12 +21,12 @@ const nameInput = document.getElementById('nameInput');
 const playButton = document.getElementById('playButton');
 const counter = document.getElementById('counter');
 
-class Entity {
-    constructor(type, health, size, speed, positionX, positionY) {
+class Object {
+    constructor(type, heigth, width, weigth, positionX, positionY) {
         this.type = type;
-        this.health = health;
-        this.size = size;
-        this.speed = speed;
+        this.heigth = heigth;
+        this.width = width;
+        this.weigth = weigth;
         this.positionX = positionX;
         this.positionY = positionY;
     }
@@ -54,10 +55,6 @@ class Entity {
         return this.positionY;
     }
 
-    setHealth(health) {
-        this.health = health;
-    }
-
     setPositionX(action, positionX) {
         if (action == 0) {
             if (this.positionX < this.screenWidth) {
@@ -81,6 +78,20 @@ class Entity {
             }
         }
     }
+
+}
+
+class Entity extends Object {
+    constructor(type, heigth, width, weigth, positionX, positionY, health, speed) {
+        super(type, heigth, width, weigth, positionX, positionY);
+        this.health = health;
+        this.speed = speed;
+    }
+
+    setHealth(health) {
+        this.health = health;
+    }
+
 }
 
 class Player extends Entity {
@@ -90,8 +101,8 @@ class Player extends Entity {
     screenHeight = body.clientHeight;
     screenWidth = body.clientWidth;
 
-    constructor(name, score, type, health, size, speed, positionX, positionY) {
-        super(type, health, size, speed, positionX, positionY);
+    constructor(type, heigth, width, weigth, positionX, positionY, health, speed, name, score) {
+        super(type, heigth, width, weigth, positionX, positionY, health, speed);
         this.name = name;
         this.score = score;
     }
@@ -251,5 +262,5 @@ playButton.addEventListener("click", function () {
     }
 });
 
-const player = new Player(nameInput.value, 0, 'ghost', 100, 1, 8, 0, 0);
+const player = new Player('ghost', 1, 1,1,1, 1, 100, 10, nameInput.value, 0);
 let speed = player.getSpeed();
