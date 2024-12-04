@@ -121,6 +121,31 @@ class Object {
 
 }
 
+class Booster extends Object {
+    constructor(type, heigth, width, weigth, positionX, positionY, multiplier) {
+        super(type, heigth, width, weigth, positionX, positionY);
+        this.multiplier = multiplier;
+    }
+    
+    setMultiplier(multiplier) {
+        this.multiplier = multiplier;
+    }
+
+    getMultiplier() {
+        return this.multiplier;
+    }
+
+    generate() {
+        const newBooster = document.createDocumentFragment('div');
+        const newBoosterIcon = document.createDocumentFragment('img');
+        
+        newBooster.appendChild(newBoosterIcon);
+        newBooster.setAttribute('class', 'booster');
+        newBoosterIcon.setAttribute('class', 'bosterIcon');
+    }
+
+}
+
 class Entity extends Object {
     sprite;
 
